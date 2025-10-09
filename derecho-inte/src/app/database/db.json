@@ -1,0 +1,152 @@
+[
+  {
+    "id": "1",
+    "titulo": "Ley de Promoción del Reciclaje Urbano",
+    "descripcion": "Fomenta la separación de residuos en origen y otorga beneficios fiscales a empresas que implementen programas de reciclaje.",
+    "autor": "Diputada María González",
+    "fecha_creacion": "2025-04-12",
+    "estado": "En debate",
+    "categoria": "Medio ambiente",
+    "votos_a_favor": 120,
+    "votos_en_contra": 35,
+    "comentarios": [
+      "Excelente propuesta para reducir residuos.",
+      "Se debería incluir educación ambiental en escuelas."
+    ]
+  },
+  {
+    "id": "2",
+    "titulo": "Ley de Acceso Gratuito a Internet en Espacios Públicos",
+    "descripcion": "Garantiza el acceso libre y gratuito a internet en plazas, parques y universidades públicas.",
+    "autor": "Senador Carlos Ramírez",
+    "fecha_creacion": "2025-02-28",
+    "estado": "Aprobado en comisión",
+    "categoria": "Tecnología",
+    "votos_a_favor": 98,
+    "votos_en_contra": 12,
+    "comentarios": [
+      "Muy buena iniciativa para reducir la brecha digital.",
+      "Falta definir el presupuesto."
+    ]
+  },
+  {
+    "id": "3",
+    "titulo": "Ley de Igualdad Salarial entre Géneros",
+    "descripcion": "Obliga a las empresas a garantizar la igualdad salarial entre hombres y mujeres en puestos equivalentes.",
+    "autor": "Diputada Ana López",
+    "fecha_creacion": "2025-01-15",
+    "estado": "Sancionada",
+    "categoria": "Derechos laborales",
+    "votos_a_favor": 155,
+    "votos_en_contra": 20,
+    "comentarios": [
+      "Era hora de legislar sobre este tema.",
+      "Falta control de cumplimiento."
+    ]
+  },
+  {
+    "id": "4",
+    "titulo": "Ley de Reducción de Plásticos de un Solo Uso",
+    "descripcion": "Prohíbe gradualmente el uso de plásticos descartables en comercios y supermercados.",
+    "autor": "Senador Pablo Torres",
+    "fecha_creacion": "2024-12-05",
+    "estado": "En revisión",
+    "categoria": "Medio ambiente",
+    "votos_a_favor": 89,
+    "votos_en_contra": 40,
+    "comentarios": [
+      "Importante para el cuidado ambiental.",
+      "Necesita alternativas económicas para los comerciantes."
+    ]
+  },
+  {
+    "id": "5",
+    "titulo": "Ley de Educación Financiera en Escuelas Secundarias",
+    "descripcion": "Incorpora contenidos de educación financiera y administración personal en el currículo escolar.",
+    "autor": "Diputado Jorge Navarro",
+    "fecha_creacion": "2025-03-10",
+    "estado": "Aprobada",
+    "categoria": "Educación",
+    "votos_a_favor": 130,
+    "votos_en_contra": 15,
+    "comentarios": [
+      "Excelente para los jóvenes.",
+      "Sería ideal incluir cooperativismo."
+    ]
+  },
+  {
+    "id": "6",
+    "titulo": "Ley de Energías Renovables Domiciliarias",
+    "descripcion": "Otorga subsidios a familias que instalen paneles solares o sistemas eólicos domésticos.",
+    "autor": "Senadora Lucía Martínez",
+    "fecha_creacion": "2025-05-09",
+    "estado": "En comisión",
+    "categoria": "Energía",
+    "votos_a_favor": 77,
+    "votos_en_contra": 28,
+    "comentarios": [
+      "Gran paso hacia la sostenibilidad.",
+      "Debería incluir créditos blandos."
+    ]
+  },
+  {
+    "id": "7",
+    "titulo": "Ley de Protección Animal y Tenencia Responsable",
+    "descripcion": "Establece sanciones por maltrato animal y promueve campañas de adopción.",
+    "autor": "Diputada Florencia Díaz",
+    "fecha_creacion": "2024-11-20",
+    "estado": "Sancionada",
+    "categoria": "Derechos animales",
+    "votos_a_favor": 162,
+    "votos_en_contra": 8,
+    "comentarios": [
+      "Excelente iniciativa.",
+      "Faltan recursos para refugios."
+    ]
+  },
+  {
+    "id": "8",
+    "titulo": "Ley de Transporte Público Sustentable",
+    "descripcion": "Impulsa la conversión de unidades de transporte público a vehículos eléctricos.",
+    "autor": "Senador Nicolás Herrera",
+    "fecha_creacion": "2025-02-03",
+    "estado": "En debate",
+    "categoria": "Transporte",
+    "votos_a_favor": 110,
+    "votos_en_contra": 25,
+    "comentarios": [
+      "Clave para reducir emisiones.",
+      "Faltan incentivos para las empresas de transporte."
+    ]
+  },
+  {
+    "id": "9",
+    "titulo": "Ley de Derechos Digitales de los Ciudadanos",
+    "descripcion": "Protege la privacidad y seguridad de los datos personales en entornos digitales.",
+    "autor": "Diputado Federico Salas",
+    "fecha_creacion": "2025-06-14",
+    "estado": "En comisión",
+    "categoria": "Tecnología",
+    "votos_a_favor": 102,
+    "votos_en_contra": 18,
+    "comentarios": [
+      "Muy necesaria en tiempos actuales.",
+      "Debe contemplar sanciones más duras."
+    ]
+  },
+  {
+    "id": "10",
+    "titulo": "Ley de Incentivo a la Producción de Alimentos Orgánicos",
+    "descripcion": "Crea un régimen de beneficios impositivos para productores agrícolas certificados como orgánicos.",
+    "autor": "Senadora Laura Rivas",
+    "fecha_creacion": "2025-07-22",
+    "estado": "Aprobada",
+    "categoria": "Agricultura",
+    "votos_a_favor": 121,
+    "votos_en_contra": 19,
+    "comentarios": [
+      "Impulsa la economía verde.",
+      "Faltan medidas de control de certificación."
+    ]
+  }
+]
