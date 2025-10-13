@@ -4,8 +4,8 @@ import Link from "next/link";
 
 
 export default function ForoProyectosLey() {
-  const [author, setAuthor] = useState<string | null>(null);
-  const [title, setTitle] = useState<string | null>(null);
+  const [author, setAuthor] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
