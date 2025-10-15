@@ -1,10 +1,10 @@
 'use client';
 
 import { login } from '@/app/actions/auth';
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 
 export default function LoginForm() {
-  const [state, action, pending] = useFormState(login, undefined);
+  const [state, action, pending] = useActionState(login, undefined);
 
   return (
     <form action={action} className="space-y-4">
