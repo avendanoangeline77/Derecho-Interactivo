@@ -3,7 +3,8 @@
 import 'server-only'
 import { SignJWT, jwtVerify } from 'jose'
 //import { SessionPayload } from '@/app/lib/definitions'
- 
+import Link from "next/link"
+import pb from '../database/db'
 
 import { cookies } from 'next/headers'
  
@@ -12,10 +13,11 @@ type SessionPayload = { id: string; email: string; username: string, expiresAt: 
 const secretKey = process.env.SESSION_SECRET
 const encodedKey = new TextEncoder().encode(secretKey)
  
-
 export async function deleteSession() {
   const cookieStore = await cookies()
   cookieStore.delete('session')
+  pb.authStore.clear()
+  return null
 }
 
 export async function createSession(payload: SessionPayload) {

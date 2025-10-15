@@ -2,7 +2,7 @@
 import pb from "../database/db";
 import { cookies } from "next/headers";
 import { decrypt } from "../lib/sessions";
-import { userFormSchema, userEditFormSchema} from "../lib/validations/users";
+import { userFormSchema, userEditFormSchema } from "../lib/validations/users";
 import { FormState } from "../lib/validations/auth";
 import { sendEmail } from "../lib/mailer";
 
@@ -10,83 +10,103 @@ import { bienvenida } from "../lib/bienvenida";
 import { errors } from "jose";
 
 export async function deleteUser(formData: FormData) {
- try {
-  const userId = formData.get('id')
-  console.log(userId)
-  console.log(formData)
-  await pb.collection('users').delete(userId);
-return{
-  message: "success"
-}
- } catch (error) {
-  console.log(errors)
- }
-   
+  try {
+    const userId = formData.get('id')
+    console.log(userId)
+    console.log(formData)
+    await pb.collection('users').delete(userId);
+    return {
+      message: "success"
+    }
+  } catch (error) {
+    console.log(errors)
+  }
+
 }
 
 
 export async function editUser(formData: FormData) {
- console.log("hola") 
- const userId = formData.get('id')
- const validatedFields = userEditFormSchema.safeParse({
-      role: formData.get('role'),
-      email: formData.get('email'),
-      username: formData.get('username'),
-    })
+  console.log("hola")
+  const userId = formData.get('id')
+  console.log(userId, "xd")
+  const validatedFields = userEditFormSchema.safeParse({
+    role: formData.get('role'),
+    email: formData.get('email'),
+    username: formData.get('username'),
+  })
+  console.log(validatedFields, "chau")
 
-    if (!validatedFields.success) {
-      return {
-        errors: validatedFields.error.flatten().fieldErrors,
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+  console.log(validatedFields, "chau")
+
+
+  const { email, role, username } = validatedFields.data
+
+
+  try {
+
+  await pb.admins.authWithPassword(process.env.POCKETBASE_USERNAME, process.env.POCKETBASE_PASSWORD)
+  
+    // 2️⃣ Crear usuario en PocketBase
+    console.log(userId)
+    const user = await pb.collection('users').update(userId, {
+      username,
+      email,
+      role,
+    });
+    console.log(user)
+    
+    pb.authStore.clear()
+
+    return {
+      message: "success",
+      data: {
+        id: user.id,
+        username,
+        email,
+        role
       }
     }
-    console.log(validatedFields)
+
+  }
+  catch (errors) {
+    console.log(errors.response)
+
+    if (errors.response.data.username) {
+      const message = errors.response.data.username.message
+      console.log(errors.response)
+      return {
+        errors: { username: ['El usuario ya existe'] },
+      }
 
 
-const {  email,role,username } = validatedFields.data
- 
-
-    try {
- // 2️⃣ Crear usuario en PocketBase
-  console.log(userId)
-  const user = await pb.collection('users').update(userId, {
-  username,
-  email,
-  role
-});
- console.log(user)
+    }
     return {
-        message: "success",
-        data: {
-          id: user.id,
-           username,
-           email,
-           role
-        }
+      errors: { dataBase: ['No se pudo editar al usuario.'] },
     }
 
-    }
-    catch(errors){
-        console.log(errors)
-        return {
-            errors: { general: ['No se pudo crear al usuario.'] },
-        }
-    }
+  }
 }
 
 
 export async function getUser() {
- 
-    const session  = cookies().get('session')?.value || ''
+  const cookie = await cookies()
 
-    const payload = await decrypt( session )
+  const session = cookie.get('session')?.value || ''
 
-    if(!payload?.id) return null
+  const payload = await decrypt(session)
 
-    return payload
-    
+  if (!payload?.id) return null
+
+  return payload
+
 }
 
-  export async function getUsers() {
+export async function getUsers() {
   try {
     const result = await pb.collection('users').getList(1, 50, {
       sort: '-created',
@@ -101,39 +121,39 @@ export async function getUser() {
 
 export async function createUser(formData: FormData) {
 
-function generarPassword(longitud = 8) {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&"
-  let password = ""
-  for (let i = 0; i < longitud; i++) {
-    const randomIndex = Math.floor(Math.random()* chars.length)
-    password += chars[randomIndex]
-  }
-  return password
-}
- const validatedFields = userFormSchema.safeParse({
-      role: formData.get('role'),
-      email: formData.get('email'),
-      
-    })
-
-    if (!validatedFields.success) {
-      return {
-        errors: validatedFields.error.flatten().fieldErrors,
-      }
+  function generarPassword(longitud = 8) {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&"
+    let password = ""
+    for (let i = 0; i < longitud; i++) {
+      const randomIndex = Math.floor(Math.random() * chars.length)
+      password += chars[randomIndex]
     }
+    return password
+  }
+  const validatedFields = userFormSchema.safeParse({
+    role: formData.get('role'),
+    email: formData.get('email'),
 
-    console.log("abuela")
+  })
 
-const {  email,role } = validatedFields.data
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
 
-    console.log('➡️ Registrando usuario:', email)
-    
-    const password = generarPassword()
-    const username = role+password.slice(0,5)
+  console.log("abuela")
 
-    try {
- // 2️⃣ Crear usuario en PocketBase
- 
+  const { email, role } = validatedFields.data
+
+  console.log('➡️ Registrando usuario:', email)
+
+  const password = generarPassword()
+  const username = role + password.slice(0, 5)
+
+  try {
+    // 2️⃣ Crear usuario en PocketBase
+
 
     const user = await pb.collection('users').create({
       username,
@@ -142,24 +162,31 @@ const {  email,role } = validatedFields.data
       password,
       passwordConfirm: password,
       role
-        })
+    })
     const html = ``
     await sendEmail("uba.avendanoangelina@gmail.com", bienvenida(username, password))
     return {
-        message: "success",
-        data: {
-          id: user.id,
-           username,
-           email,
-           role
-        }
+      message: "success",
+      data: {
+        id: user.id,
+        username,
+        email,
+        role
+      }
     }
 
+  }
+  catch (errors) {
+    console.log(errors.response)
+    if(errors.response.data.email){
+
+      return  {
+      errors: { email: ['Este email ya existe.'] },
     }
-    catch(errors){
-        console.log(errors)
-        return {
-            errors: { general: ['No se pudo crear al usuario.'] },
-        }
     }
+    console.log(errors)
+    return {
+      errors: { general: ['No se pudo crear al usuario.'] },
+    }
+  }
 }

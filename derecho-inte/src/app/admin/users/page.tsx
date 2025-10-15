@@ -3,6 +3,7 @@ import { editUser, getUsers, deleteUser
 
  } from "@/app/actions/users";
 import { createUser } from "@/app/actions/users";
+import { userFormSchema } from "@/app/lib/validations/users";
 import { useState } from "react";
 import { useActionState ,useEffect} from 'react'
 
@@ -16,6 +17,8 @@ type User = {
 
 export default function UserAdminPanel() {
 // const users = await getUsers()
+
+const [response, setResponse] = useState(null);
   
  //const [state, action, pending] = useActionState(createUser, undefined)
  const [id, setId] = useState<string | null>(null); 
@@ -48,6 +51,8 @@ export default function UserAdminPanel() {
   const formData = new FormData(event.currentTarget);
   const user =editingUser ?  await editUser(formData) : await createUser(formData); // llama a la server action manualmente  console.log(user)
   console.log(user)
+
+  setResponse(user)
   if (user.message) {
     if (editingUser){
       const users1 = users.map((user1: any) =>
@@ -55,17 +60,27 @@ export default function UserAdminPanel() {
     );
     console.log(users1)
 
+
     
 
     setUsers(users1);
-
+    
+    setIsModalOpen(false)
+    
     }
+
     else {
+     
+
       setUsers(prev => [{
+      id: user.data.id,
       username: user.data.username,
       email: user.data.email,
       role: user.data.role
     }, ...prev]);
+        
+    setIsModalOpen(false)
+
     }
    
   }
@@ -93,7 +108,7 @@ const handleDelete = async(id: number) => {
     if (confirm("¿Eliminar este usuario?")) {
 
     const formData = new FormData();
-    formData.append("id",id)
+    formData.append("id",id.toString())
   
     console.log(formData)
     const response = await deleteUser(formData)
@@ -177,6 +192,7 @@ const handleDelete = async(id: number) => {
               }
               {
                 editingUser && (
+                <div>
                    <input 
                      type="text"
               placeholder="Nombre"
@@ -185,9 +201,17 @@ const handleDelete = async(id: number) => {
               value={username}
               onChange={(e)=>setUsername(e.target.value)}
               className="w-full mb-3 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+              
+              {response?.errors?.username && (
+
+            <p className="mt-1 text-sm text-red-600">{response.errors.username}</p>
+          )}
+          </div>
+
+
                 )
               }
-             
+           
                  <input
               type="email"
               placeholder="Correo"
@@ -196,8 +220,8 @@ const handleDelete = async(id: number) => {
               onChange={(e)=>setEmail(e.target.value)}
               className="w-full mb-3 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {state?.errors?.email && (
-            <p className="mt-1 text-sm text-red-600">{state.errors.email}</p>
+            {response?.errors?.email && (
+            <p className="mt-1 text-sm text-red-600">{response.errors.email}</p>
           )}
             <select 
             name="role"

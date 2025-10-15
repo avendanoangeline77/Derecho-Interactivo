@@ -9,6 +9,8 @@ import { cookies } from 'next/headers'
 
 export async function login(state: FormState, formData: FormData) {
   try {
+
+    console.log(formData)
     // 1️⃣ Validar campos
     const validatedFields = loginFormSchema.safeParse({
       email: formData.get('email'),

@@ -2,22 +2,18 @@ import { z } from 'zod'
 
 export const userFormSchema = z.object({
   
-  email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
+  email: z.string().email({ message: 'Formato de email invalido.' }).trim(),
   role:  z.enum(["docente", "estudiante"])
 })
 
 export const userEditFormSchema = z.object({
   
-  email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
-  role:  z.enum(["docente", "estudiante"]),
-
-  
-   username: z
+  username: z
     .string()
-    /*.regex(/[a-zA-Z]/, { message: 'como minimo debe tener mas de una letra.' })
-   .regex(/[0-9]/, { message: 'como minimo debe tener mas un numero.' })
-    .regex(/[^a-zA-Z0-9]/, {
-      message: 'como minimo un caracter.',
-    })*/
-    .trim(),
+    .min(3, "El nombre de usuario debe tener al menos 3 caracteres")
+    .max(30, "El nombre de usuario debe tener máximo 30 caracteres"),
+  email: z
+    .string()
+    .email("El correo electrónico no es válido"),
+  role: z.enum(["docente", "estudiante"], "Debes seleccionar un rol válido"),
 })
