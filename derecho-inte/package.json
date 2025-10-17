@@ -6,9 +6,14 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "npx playwright test",
+    "test:report": "npx playwright show-report",
+    "test:headed": "npx playwright test --headed",
+    "codegen": "npx tsx ./tests/utils/codegen-global-setup.ts && npx playwright codegen && npx tsx ./tests/utils/codegen-global-teardown.t"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "jose": "^6.1.0",
     "next": "15.5.4",
     "nodemailer": "^7.0.9",
@@ -20,6 +25,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.56.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
