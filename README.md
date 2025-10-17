@@ -1,2 +1,2 @@
 # Derecho-Interactivo
-Angeline, Jazmin y Luz
+Angeline Avendaño y Jazmin Huaynoca 
