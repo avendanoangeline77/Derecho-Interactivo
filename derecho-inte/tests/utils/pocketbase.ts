@@ -12,7 +12,7 @@ export const CREDENTIALS = {
     WEB_ADMIN: { email: "web.admin@gmail.com", password: "webadmin", role: "admin" },
     
     // Otros usuarios de prueba para la web
-    DOCENTE: { email: "docente@gmail.com", password: "docente", role: "docente" },
+    DOCENTE: { email: "docente@gmail.com", password: "docente2025", role: "docente" },
     ESTUDIANTE: { email: "estudiante@gmail.com", password: "estudiante", role: "estudiante" },
     DUPLICATE: { email: "duplicado@gmail.com", password: "duplicado", role: "docente" }
 };
