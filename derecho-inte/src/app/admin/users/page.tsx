@@ -39,7 +39,6 @@ const [response, setResponse] = useState(null);
 
     async function fetchUsers() {
       const usersList = await getUsers()
-      console.log(usersList,"Users List")
       setUsers(usersList)
     }
     fetchUsers()

@@ -8,7 +8,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
  
 
    const user = pb.authStore.model // usuario actual
-   console.log(pb)
+   console.log(user, 'ange')
    
   return (
     <div className="min-h-screen flex flex-col">

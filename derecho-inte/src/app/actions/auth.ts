@@ -1,7 +1,7 @@
 "use server"
 
 import { deleteSession } from '@/app/lib/sessions'
-import pb from '../database/db';
+import pb from '@/app/database/db';
 import { redirect } from "next/navigation";
 import { loginFormSchema, FormState } from '@/app/lib/validations/auth'
 import { createSession, decrypt } from '@/app/lib/sessions'
@@ -9,8 +9,6 @@ import { cookies } from 'next/headers'
 
 export async function login(state: FormState, formData: FormData) {
   try {
-
-    console.log(formData)
     // 1️⃣ Validar campos
     const validatedFields = loginFormSchema.safeParse({
       email: formData.get('email'),
@@ -27,13 +25,14 @@ export async function login(state: FormState, formData: FormData) {
 
     // 2️⃣ Intentar autenticación en PocketBase
     const authData = await pb.collection('users').authWithPassword(email, password)
+    
 
     if (!authData?.record) {
       return {
         errors: { general: ['No se pudo autenticar al usuario.'] },
       }
     }
-     console.log(authData.record)
+
     // 3️⃣ Crear sesión (ej. guardada en cookie)
     await createSession({
       id: authData.record.id,
@@ -45,9 +44,11 @@ export async function login(state: FormState, formData: FormData) {
 
     // 4️⃣ Redirigir al dashboard
    
-  } catch (error: any) {
+  } catch (error) {
     // 🧠 PocketBase lanza un error con un mensaje legible
     console.error('Error al autenticar:', error)
+        console.error('Error al autenticar:', error.response)
+
 
     // Si el error viene de PocketBase
     if (error?.status === 400) {

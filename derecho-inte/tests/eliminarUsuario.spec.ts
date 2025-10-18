@@ -11,7 +11,7 @@ test('test', async ({ page }) => {
   await page.getByRole('button', { name: 'Gestion de Usuarios Gestiona los usuarios' }).click();
   await expect(page.getByText('Panel de Administración de Usuarios+ Agregar')).toBeVisible();
   page.once('dialog', dialog => {
-    console.log(`Dialog message: ${dialog.message()}`);
+    (`Dialog message: ${dialog.message()}`);
     dialog.dismiss().catch(() => {});
   });
   await page.getByRole('button', { name: 'Eliminar' }).first().click();

@@ -1,9 +1,37 @@
+'use client'
+
 import LoginForm from "../../ui/LoginForm";
+import { useEffect, useState } from "react";
 
 export default function Login() {
   
-  
+ const [isLoading, setIsLoading] = useState(true);
 
+ useEffect(() => {
+  setTimeout(
+    () => {
+      setIsLoading(false)
+
+    },1000
+  )
+    
+   }, [])
+
+ if (isLoading){
+  return (
+   <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
+      <div className="relative w-16 h-16">
+        <div className="absolute inset-0 border-4 border-gray-600 rounded-full"></div>
+        <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>
+      </div>
+      <p className="mt-4 text-lg font-semibold text-gray-300 animate-pulse">
+        Cargando...
+      </p>
+    </div>
+
+  )
+
+ }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
       <div className="bg-gray-800 rounded-2xl shadow-lg p-8 w-80 text-center border border-gray-700">

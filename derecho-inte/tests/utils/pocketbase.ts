@@ -48,7 +48,7 @@ export async function clearCollection(collection: string) {
             await pb.collection(collection).delete(record.id);
         }
         
-        console.log(`Colección "${collection}" limpiada (${records.length} registros).`);
+        (`Colección "${collection}" limpiada (${records.length} registros).`);
     } catch (err) {
         console.error(`❌ Error limpiando colección ${collection}:`, err);
         throw new Error(`Fallo de conexión o autenticación de Admin en PocketBase: ${err}`);
@@ -72,7 +72,7 @@ export async function createTestUser({ email, password, role }: (typeof CREDENTI
             username: email.split("@")[0] + "_test",
             role: role,
         });
-        console.log(`✅ Usuario de prueba creado: ${role} (${email})`);
+        (`✅ Usuario de prueba creado: ${role} (${email})`);
         return user;
     } catch (err) {
         // Esto puede ocurrir si intentas crear el usuario duplicado en el setup, lo cual es normal.

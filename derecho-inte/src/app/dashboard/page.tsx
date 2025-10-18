@@ -2,15 +2,29 @@
 import  pb  from '@/app/database/db'
 import { getUser } from '../actions/users';
 
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { logout } from "../actions/auth";
 
 import Link from "next/link"
 
-const user = await getUser()
+
+//const user = await getUser()
+
+
 
 export default function HomeScreen() {
-  console.log(user)
+const [user, setUser] = useState<any>(null)
+useEffect(() => {
+    async function fetchUser() {
+   /*    const usersList = await getUsers()
+      console.log(usersList,"Users List")
+      setUsers(usersList) */
+      setUser( await getUser() )
+    }
+    fetchUser()
+  }, [])
+ 
+ 
   const modules = [
     {
       title: "Historia Institucional",
@@ -63,10 +77,13 @@ export default function HomeScreen() {
         </div>
 
         <hr className="border-gray-700 mb-4" />
-
-        {/* Title */}
-        <h2 className="text-lg font-semibold text-center">Derecho Interactivo</h2>
-        <p className="text-sm text-center mt-1 mb-6">Bienvenidos</p>
+<div>
+  {/* Nombre de usuario y rol a la izquierda */}
+  <p className="text-sm text-left mt-1 mb-2">Bienvenido {user?.username} {user?.role}</p>
+  
+  {/* Título centrado */}
+  <h2 className="text-lg font-semibold text-center mb-6">Derecho Interactivo</h2>
+</div>
 
         {/* Modules */}
         <div className="grid grid-cols-2 gap-3 mb-6">
@@ -85,7 +102,7 @@ export default function HomeScreen() {
               className="bg-gray-700 hover:bg-gray-600 transition-all p-3 rounded-xl text-center border border-gray-600"
             >
               <h3 className="text-sm font-semibold mb-1">Gestion de Usuarios</h3>
-              <p className="text-xs text-gray-300">Gestiona los usuarios</p>
+              <p className="text-xs text-gray-300">Gestiona los usuarios en el panel de control</p>
               
             </button></Link>
            )}
