@@ -1,8 +1,9 @@
-"use client"
+
 import  pb  from '@/app/database/db'
 import { getUser } from '../actions/users';
 
-import React, {useState, useEffect} from "react";
+import { getVerifyUser } from '../actions/users';
+
 import { logout } from "../actions/auth";
 
 import Link from "next/link"
@@ -10,25 +11,13 @@ import Link from "next/link"
 import Image from 'next/image';
 //const user = await getUser()
 
+import WelcomeUser from '../ui/WelcomeUser';
+import BotonLogot from '../ui/BotonLogout';
+import GestionUsers from '../ui/GestionUsers';
+
+export default async function HomeScreen() {
 
 
-
-export default function HomeScreen() {
-const [user, setUser] = useState<any>(null)
-useEffect(() => {
-    async function fetchUser() {
-   /*    const usersList = await getUsers()
-      console.log(usersList,"Users List")
-      setUsers(usersList) */
-      const response = await getUser()
-      console.log(response)
-      setUser(response)
-      
-    }
-    fetchUser()
-  }, [])
- 
- 
   const modules = [
     {
       title: "Historia Institucional",
@@ -90,13 +79,8 @@ useEffect(() => {
         </div>
 
         <hr className="border-gray-700 mb-4" />
-<div>
-  {/* Nombre de usuario y rol a la izquierda */}
-  <p className="text-sm text-left mt-1 mb-2">Bienvenido {user?.username} {user?.role}</p>
-  
-  {/* Título centrado */}
-  <h2 className="text-lg font-semibold text-center mb-6">Derecho Interactivo</h2>
-</div>
+
+        <WelcomeUser></WelcomeUser>
 
         {/* Modules */}
         <div className="grid grid-cols-2 gap-3 mb-6">
@@ -110,22 +94,12 @@ useEffect(() => {
             </button>
           ))}
           
-          {user?.role == "admin" && ( 
-            <Link href="/admin/users"> <button
-              className="bg-gray-700 hover:bg-gray-600 transition-all p-3 rounded-xl text-center border border-gray-600"
-            >
-              <h3 className="text-sm font-semibold mb-1">Gestion de Usuarios</h3>
-              <p className="text-xs text-gray-300">Gestiona los usuarios en el panel de control</p>
-              
-            </button></Link>
-           )}
+      <GestionUsers></GestionUsers>
           
         </div>
 
         {/* Logout button */}
-        <button onClick={()=>logout()} className="w-full bg-red-700 hover:bg-red-800 transition-colors py-2 rounded-lg font-semibold">
-          Cerrar sesión
-        </button>
+       <BotonLogot></BotonLogot>
       </div>
     </div>
   );

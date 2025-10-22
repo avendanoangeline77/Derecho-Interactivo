@@ -1,13 +1,36 @@
-'use client';
 
-import { login } from '@/app/actions/auth';
-import { useActionState } from 'react';
+'use client'
+
+import { useUser } from '@/app/context/UserContext'
+import { login } from '@/app/actions/auth'
+import { useActionState } from 'react'
 
 export default function LoginForm() {
-  const [state, action, pending] = useActionState(login, undefined);
+  const { setUser } = useUser() as any
+
+  const [state, formAction, isPending] = useActionState(
+    async (prevState: any, formData: FormData) => {
+      const res = await login(prevState, formData)
+console.log(res)
+      if (!res.errors) {
+        setUser({
+          username: res.username,
+          email: res.email,
+          id: res.id,
+          role: res.role
+        })
+        // opcional: redirigir
+        window.location.href = '/dashboard'
+      }
+
+      return res
+    },
+    null
+  )
 
   return (
-    <form action={action} className="space-y-4">
+    <div >
+         <form action={formAction} className="space-y-4">
       {/* Email */}
       <div>
         <input
@@ -43,12 +66,14 @@ export default function LoginForm() {
 
       {/* Submit */}
       <button
-        disabled={pending}
+        disabled={isPending}
         type="submit"
         className="w-full bg-blue-700 hover:bg-blue-800 transition-colors py-2 rounded-lg font-semibold"
       >
-        {pending ? 'Ingresando...' : 'Ingresar'}
+        {isPending ? 'Ingresando...' : 'Ingresar'}
       </button>
     </form>
-  );
+
+    </div>
+  )
 }

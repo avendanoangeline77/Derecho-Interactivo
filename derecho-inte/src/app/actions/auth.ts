@@ -34,14 +34,18 @@ export async function login(state: FormState, formData: FormData) {
     }
 
     // 3️⃣ Crear sesión (ej. guardada en cookie)
-    await createSession({
+const user = {
       id: authData.record.id,
       email: authData.record.email,
       username: authData.record.username,
       role: authData.record.role,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 días
-      verified: authData.record.verified
-    })
+    }
+    // 3️⃣ Crear sesión (ej. guardada en cookie)
+    await createSession(user)
+
+    return user
+
 
     // 4️⃣ Redirigir al dashboard
    

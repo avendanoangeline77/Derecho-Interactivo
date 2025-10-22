@@ -5,7 +5,7 @@ import { AlertTriangle, X } from 'lucide-react';
 import pb from "../database/db";
 import { sendVerification } from "../actions/auth";
 
-import { getUser } from "../actions/users";
+import { getUser, getVerifyUser } from "../actions/users";
 
 // ====================================================================
 // MOCKS DE ACCIÓN (Mantener o reemplazar con tu lógica de Next.js/PocketBase)
@@ -35,7 +35,7 @@ const EmailVerificationPopup = ({ user }) => {
     useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const _user = await getUser();
+        const _user = await getVerifyUser();
         console.log(_user,'chaufa')
         if (_user.verified) {
           setShow(true);

@@ -98,8 +98,27 @@ export async function getUser() {
     
     console.log(payload,"holaaaa")
     if(!payload?.id) return null
-    const user = await pb.collection('users').getOne(payload?.id, { cache: 'no-store' });
+    //const user = await pb.collection('users').getOne(payload?.id, { cache: 'no-store' });
+ //console.log(user)
+    return payload
+
+}
+
+export async function getVerifyUser() {
  
+  const cookie = await cookies()
+  const session = cookie.get('session')?.value
+
+
+    const payload = await decrypt(session )
+
+    if(!payload?.id) return null
+
+
+      const user = await pb.collection('users').getOne(payload?.id, { cache: 'no-store',  $cancelKey: null, // ✅ disables auto-cancellation
+  });
+
+
     return user
 
 }
