@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { decrypt } from '@/app/lib/sessions'
 import { cookies } from 'next/headers'
-
 import pb from './app/database/db'
+
 // 1. Specify protected an/d public routes
-const protectedRoutes = ['/','/dashboard', '/foro', '/dinamicas', '/comentarios']
+const protectedRoutes = ['/', '/dashboard', '/foro', '/dinamicas', '/comentarios']
 const publicRoutes = ['/auth', 'login', 'signup',]
 const adminRoutes = ['/admin']
 
@@ -18,21 +18,47 @@ export default async function middleware(req: NextRequest) {
   const cookieValue = cookie.get('session')?.value
   let session;
 
-  if (cookieValue) session = decrypt(cookieValue)
+  if (cookieValue) session = await decrypt(cookieValue)
 
 
-if(isPublicRoute && cookieValue){
-   return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
- }
- 
+  console.log(session)
+  console.log('Path:', path)
+  console.log('Is Protected Route:', isProtectedRoute)
+  console.log('Is Public Route:', isPublicRoute)
+  console.log('Is Admin Route:', isAdminRoute)
 
- if(isProtectedRoute && !cookieValue){
-   return NextResponse.redirect(new URL('/auth/login', req.nextUrl))
- }
+  /* if(session){
+  console.log('Session ID:', session.id)
+  try {
+          const user = await pb.collection('users').getOne(session.id)
 
-  if(isAdminRoute && !cookieValue && session?.role !== 'admin'){
-   return NextResponse.redirect(new URL('/notallowed', req.nextUrl))
- }
+          if (user.verified === false) {
+
+            await pb.collection('users').requestVerification(session.email)
+
+          }
+
+
+
+  } catch (error) {
+    console.log('Error al obtener el usuario:', error)
+  }
+} */
+
+  if (isPublicRoute && cookieValue) {
+    return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
+  }
+
+  console.log()
+  if (isProtectedRoute && !cookieValue) {
+    return NextResponse.redirect(new URL('/auth/login', req.nextUrl))
+  }
+
+
+
+  if (isAdminRoute && !cookieValue && session?.role !== 'admin') {
+    return NextResponse.redirect(new URL('/notallowed', req.nextUrl))
+  }
 
 
   return NextResponse.next()
@@ -40,5 +66,5 @@ if(isPublicRoute && cookieValue){
 
 // Routes Middleware should not run on
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.\.[png|ts|img|svg]$).)'],
+  matcher: ['/((?!api|_next/static|_next/image|.*\\.[png|ts|img|svg]$).*)'],
 }

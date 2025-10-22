@@ -26,7 +26,7 @@ export async function login(state: FormState, formData: FormData) {
     // 2️⃣ Intentar autenticación en PocketBase
     const authData = await pb.collection('users').authWithPassword(email, password)
     
-
+   console.log(authData)
     if (!authData?.record) {
       return {
         errors: { general: ['No se pudo autenticar al usuario.'] },
@@ -40,6 +40,7 @@ export async function login(state: FormState, formData: FormData) {
       username: authData.record.username,
       role: authData.record.role,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 días
+      verified: authData.record.verified
     })
 
     // 4️⃣ Redirigir al dashboard
@@ -75,4 +76,18 @@ export async function login(state: FormState, formData: FormData) {
 export async function logout() {
   await deleteSession()
   redirect('/auth/login')
+}
+
+export async function sendVerification(formData: FormData) {
+
+ try {
+  const email = formData.get('email') as string
+  console.log(email)
+  const verification = await pb.collection('users').requestVerification(email)
+  console.log(verification)
+  return true
+ } catch (error) {
+  console.log(error)
+  return false
+ }
 }

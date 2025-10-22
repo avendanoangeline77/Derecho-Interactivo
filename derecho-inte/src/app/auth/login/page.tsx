@@ -3,6 +3,9 @@
 import LoginForm from "../../ui/LoginForm";
 import { useEffect, useState } from "react";
 
+
+import Image from "next/image";
+
 export default function Login() {
   
  const [isLoading, setIsLoading] = useState(true);
@@ -37,7 +40,16 @@ export default function Login() {
       <div className="bg-gray-800 rounded-2xl shadow-lg p-8 w-80 text-center border border-gray-700">
         {/* Encabezado */}
         <div className="flex items-center justify-center mb-2">
-          <div className="w-12 h-12 border-2 border-gray-400 rounded-full mr-3"></div>
+          <div className="w-12 h-12 border-gray-400 rounded-full mr-3">
+            <Image
+          className="dark:invert"
+          src="/uba.png"
+          alt="Next.js logo"
+          height={100}
+          width={100}
+          priority
+        />
+          </div>
           <div className="text-left">
             <h3 className="text-sm font-semibold">Facultad de Derecho</h3>
             <p className="text-xs text-gray-400">Universidad de Buenos Aires</p>
@@ -47,7 +59,16 @@ export default function Login() {
         <hr className="border-gray-700 mb-6" />
 
         {/* Logo circular o ícono */}
-        <div className="w-16 h-16 border-2 border-gray-500 rounded-full mx-auto mb-4"></div>
+        <div className="w-16 h-16 border-gray-500 rounded-full mx-auto mb-4">
+          <Image
+          className="dark:invert"
+          src="/uba.png"
+          alt="Next.js logo"
+          height={100}
+          width={100}
+          priority
+        />
+        </div>
 
         {/* Título */}
         <h2 className="text-lg font-semibold mb-1">Derecho Interactivo</h2>

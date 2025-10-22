@@ -7,8 +7,9 @@ import { logout } from "../actions/auth";
 
 import Link from "next/link"
 
-
+import Image from 'next/image';
 //const user = await getUser()
+
 
 
 
@@ -19,7 +20,10 @@ useEffect(() => {
    /*    const usersList = await getUsers()
       console.log(usersList,"Users List")
       setUsers(usersList) */
-      setUser( await getUser() )
+      const response = await getUser()
+      console.log(response)
+      setUser(response)
+      
     }
     fetchUser()
   }, [])
@@ -69,7 +73,16 @@ useEffect(() => {
       <div className="bg-gray-800 rounded-2xl shadow-lg p-6 w-80 border border-gray-700">
         {/* Header */}
         <div className="flex items-center mb-2">
-          <div className="w-10 h-10 border-2 border-gray-400 rounded-full mr-3"></div>
+          <div className="w-10 h-10 border-gray-400 rounded-full mr-3">
+            <Image
+                      className="dark:invert"
+                      src="/uba.png"
+                      alt="Next.js logo"
+                      height={100}
+                      width={100}
+                      priority
+                    />
+          </div>
           <div>
             <h3 className="text-sm font-semibold">Facultad de Derecho</h3>
             <p className="text-xs text-gray-400">Universidad de Buenos Aires</p>

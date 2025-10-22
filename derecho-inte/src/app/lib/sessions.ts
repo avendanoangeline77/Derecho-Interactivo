@@ -8,11 +8,10 @@ import pb from '../database/db'
 import { cookies } from 'next/headers'
 import { error } from 'console'
  
-export type SessionPayload = { id: string; email: string; username: string, expiresAt: Date, role:string }
+export type SessionPayload = { id: string; email: string; username: string, expiresAt: Date, role:string; verified: boolean }
 
 const secretKey = process.env.SESSION_SECRET
-
-
+console.log(secretKey,"SESSION KEY")
 const encodedKey = new TextEncoder().encode(secretKey)
  
 
@@ -28,6 +27,7 @@ export async function createSession(payload: SessionPayload) {
   const session = await encrypt(payload)
   const cookieStore = await cookies()
  
+  console.log('Creating session for user:', payload)
   cookieStore.set('session', session, {
     httpOnly: true,
     secure: true,

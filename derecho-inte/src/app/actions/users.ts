@@ -91,14 +91,16 @@ export async function editUser(formData: FormData) {
 export async function getUser() {
  
   const session = (await cookies()).get('session')?.value
-
+  
 
     const payload = await decrypt(session )
 
+    
+    console.log(payload,"holaaaa")
     if(!payload?.id) return null
-
+    const user = await pb.collection('users').getOne(payload?.id, { cache: 'no-store' });
  
-    return payload
+    return user
 
 }
 
@@ -157,6 +159,8 @@ export async function createUser(formData: FormData) {
       passwordConfirm: password,
       role
     })
+    await pb.collection('users').requestVerification(email)
+
     const html = ``
     await sendEmail(email, bienvenida(username, password))
     return {
@@ -168,7 +172,7 @@ export async function createUser(formData: FormData) {
         role
       }
     }
-
+ 
   }
   catch (errors) {
     console.log(errors.response)
