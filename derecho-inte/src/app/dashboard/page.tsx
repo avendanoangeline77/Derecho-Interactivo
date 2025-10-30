@@ -8,12 +8,15 @@ import { logout } from "../actions/auth";
 
 import Link from "next/link"
 
+
 import Image from 'next/image';
 //const user = await getUser()
 
 import WelcomeUser from '../ui/WelcomeUser';
 import BotonLogot from '../ui/BotonLogout';
 import GestionUsers from '../ui/GestionUsers';
+
+import ForoProyectoEstudiante from '../ui/ForoProyectoEstudiante';
 
 export default async function HomeScreen() {
 
@@ -47,10 +50,10 @@ export default async function HomeScreen() {
       title: "Comunidad Discord",
       desc: "Intercambia ideas y participa en debates.",
     },
-    {
+   /*  {
       title: "Foro de Proyectos de Ley",
       desc: "Sube y debate tus propuestas de ley.",
-    },
+    }, */
     {
       title: "Boletín de Notas",
       desc: "Consulta tu historial académico.",
@@ -95,7 +98,9 @@ export default async function HomeScreen() {
           ))}
           
       <GestionUsers></GestionUsers>
-          
+            
+      {/* Foro de proyecto para estudiantes */} 
+      <ForoProyectoEstudiante />
         </div>
 
         {/* Logout button */}

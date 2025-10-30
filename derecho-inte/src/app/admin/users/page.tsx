@@ -7,6 +7,9 @@ import { userFormSchema } from "@/app/lib/validations/users";
 import { useState } from "react";
 import { useActionState ,useEffect} from 'react'
 
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+
 type User = {
   username: string
   id: string;
@@ -118,6 +121,15 @@ const handleDelete = async(id: number) => {
   return (
     <div className="p-6 max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Panel de Administración de Usuarios</h1>
+
+
+       {/* Flechita para volver atras */}
+      <Link
+        href="/dashboard"
+        className="absolute top-4 left-4 p-2 rounded-full hover:bg-gray-800 transition"
+      >
+        <ArrowLeft className="w-5 h-5 text-gray-300 hover:text-white" />
+      </Link>
 
       <button
         onClick={() => handleOpenModal()}

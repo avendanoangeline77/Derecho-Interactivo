@@ -1,47 +1,47 @@
-'use client'
+'use client';
 
+import { createContext, useContext, useState, Dispatch, SetStateAction } from "react";
 
-import { createContext,useContext,useState,Dispatch } from "react"
-import { set } from "zod";
+// ✅ Tipado del usuario
+export type User = {
+  id: string;
+  email: string;
+  username: string;
+  role: string;
+  verified?: boolean;
+};
 
-
-const UserContext = createContext(null);
-
+// ✅ Tipado del contexto (puede ser null inicialmente)
 type UserContextType = {
-    currentUser: User;
-    setCurrentUser:Dispatch<any>; 
+  currentUser: User | null;
+  setUser: Dispatch<SetStateAction<User | null>>;
 };
 
-type User = {
-    id: string;
-    email: string;
-    username: string;
-    role: string;
-    verified?: boolean;
+// ✅ Crear el contexto con tipo seguro
+const UserContext = createContext<UserContextType | undefined>(undefined);
 
-   
-};
+// ✅ Provider
+export function UserProvider({
+  children,
+  user,
+}: {
+  children: React.ReactNode;
+  user?: User | null;
+}) {
+  const [currentUser, setUser] = useState<User | null>(user || null);
 
-
-export function UserProvider({ children, user }: { children: React.ReactNode; user: any }) {
-    const [currentUser, setCurrentUser] = useState<User>(user);
-
-    function  setUser(currentUser: User) {
-        setCurrentUser(currentUser);
-    }
-
-    return (
-        <UserContext.Provider value={{
-        currentUser,
-        setUser
-
-        } }>
-
-            {children}
-        </UserContext.Provider>
-    );
+  return (
+    <UserContext.Provider value={{ currentUser, setUser }}>
+      {children}
+    </UserContext.Provider>
+  );
 }
 
+// ✅ Hook personalizado (con control de seguridad)
 export function useUser() {
-    return useContext(UserContext);
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("useUser debe usarse dentro de un UserProvider");
+  }
+  return context;
 }

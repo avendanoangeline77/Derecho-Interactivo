@@ -1,12 +1,19 @@
-"use client";
 
-import React, { useState } from "react";
 import UploadProyectoModal from "@/app/ui/MarkdownModal";
+import ListaProyectos from "../ui/ListaProyectos";
+import { getProyectos } from "../actions/foro";
+import { getAreas } from "../actions/areas";
 
-export default function ForoPage() {
-  const [proyectos, setProyectos] = useState<
-    { autor: string; titulo: string; fecha: string }[]
-  >([]);
+import Link from "next/link"
+
+import { ArrowLeft } from "lucide-react";
+
+export default async function ForoPage() {
+
+  const proyectos = await getProyectos()
+
+
+  const areas = await getAreas()
 
   return (
     <main className="min-h-screen bg-black text-gray-100 p-6 flex flex-col items-center">
@@ -19,39 +26,23 @@ export default function ForoPage() {
           Un espacio para que los estudiantes suban sus propuestas
         </p>
       </header>
+       
+       {/* Flechita para volver atras */}
+      <Link
+        href="/dashboard"
+        className="absolute top-4 left-4 p-2 rounded-full hover:bg-gray-800 transition"
+      >
+        <ArrowLeft className="w-5 h-5 text-gray-300 hover:text-white" />
+      </Link>
 
+       
       {/* Botón para abrir modal */}
-      <UploadProyectoModal setProyectos={setProyectos} />
+      <UploadProyectoModal initAreas={areas}/>
 
       {/* Lista de proyectos */}
       <section className="mt-8 w-full max-w-md">
         <h2 className="text-sm text-gray-400 mb-2">LISTADO DE PROYECTOS</h2>
-        <div className="max-h-[400px] overflow-y-auto space-y-3 p-2 border border-gray-800 rounded-lg">
-          {proyectos.length === 0 ? (
-            <p className="text-gray-500 text-sm text-center py-6">
-              No hay proyectos aún.
-            </p>
-          ) : (
-            proyectos.map((proyecto, i) => (
-              <div
-                key={i}
-                className="border border-gray-700 rounded-lg p-3 bg-gray-900 hover:bg-gray-800 transition"
-              >
-                <h3 className="text-blue-400 font-semibold text-sm mb-1">
-                  {proyecto.titulo}
-                </h3>
-                <p className="text-gray-400 text-xs mb-1">
-                  <span className="font-medium text-gray-300">Autor:</span>{" "}
-                  {proyecto.autor || "Anónimo"}
-                </p>
-                <p className="text-gray-500 text-xs">
-                  <span className="font-medium text-gray-400">Publicado:</span>{" "}
-                  {proyecto.fecha}
-                </p>
-              </div>
-            ))
-          )}
-        </div>
+       <ListaProyectos proyectos={proyectos}></ListaProyectos>
       </section>
     </main>
   );

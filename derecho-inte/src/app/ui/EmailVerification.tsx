@@ -7,15 +7,6 @@ import { sendVerification } from "../actions/auth";
 
 import { getUser, getVerifyUser } from "../actions/users";
 
-// ====================================================================
-// MOCKS DE ACCIÓN (Mantener o reemplazar con tu lógica de Next.js/PocketBase)
-// ====================================================================
-
-// 3. Mock de la función de reenvío
-
-
-// ====================================================================
-
 
 /**
  * Componente Flotante para la Verificación de Email.

@@ -1,60 +1,52 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState ,useEffect, useActionState} from "react";
 import dynamic from "next/dynamic";
+import { getAreas } from "../actions/areas";
+import { agregarProyecto } from "../actions/foro";
 
-const ReactMarkdown = dynamic(() => import("react-markdown"), { ssr: false });
 
-interface Props {
-  setProyectos: React.Dispatch<
-    React.SetStateAction<{ autor: string; titulo: string; fecha: string }[]>
-  >;
+interface Proyecto {
+  autor: string;
+  titulo: string;
+  fecha: string;
+  anonimo: boolean;
+  areas: string[];
 }
 
-export default function UploadProyectoModal({ setProyectos }: Props) {
+interface Props {
+  setProyectos: React.Dispatch<React.SetStateAction<Proyecto[]>>;
+}
+
+export default function UploadProyectoModal({initAreas}) {
   const [showModal, setShowModal] = useState(false);
   const [autor, setAutor] = useState("");
   const [titulo, setTitulo] = useState("");
-  const [markdown, setMarkdown] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [anonimo, setAnonimo] = useState(false);
+  const [areas, setAreas] = useState<string[]>([]);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const text = event.target?.result as string;
-      setMarkdown(text);
-    };
-    reader.readAsText(file);
-  };
+  const [state, action, isPending] = useActionState(
+    async (prevState: any, formData: FormData) => {
+      const res = await agregarProyecto(prevState, formData)
+    console.log(res)
+      if (!res.errors) {
+        console.log(res?.errors)
+      }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!titulo.trim()) return alert("Debes ingresar un título");
+      return res
+    },
+    null
+  )
 
-    const fecha = new Date().toLocaleString("es-AR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+ useEffect(() => {
+  
+}, [])
+ 
+  // lista de áreas simulada (deberías reemplazar por las IDs reales de PocketBase)
+  const opcionesAreas = initAreas;
 
-    setProyectos((prev) => [
-      ...prev,
-      {
-        autor: autor || "Anónimo",
-        titulo,
-        fecha,
-      },
-    ]);
 
-    // limpiar campos
-    setAutor("");
-    setTitulo("");
-    setMarkdown("");
-    setShowModal(false);
-  };
 
   return (
     <>
@@ -78,67 +70,99 @@ export default function UploadProyectoModal({ setProyectos }: Props) {
             <h2 className="text-center text-xl font-semibold mb-6">
               Formulario
             </h2>
+            
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <div>
-                <label className="block text-sm mb-1">Autor</label>
+            
+            <form action={action} className="flex flex-col gap-4">
+              {/* Autor */}
+
+              <input 
+                type="hidden" 
+                name='autor'  
+                value={"fyicu44juw1xqxg"}            
+              
+              
+              />
+
+              {/* Anónimo */}
+              <div className="flex items-center gap-2">
                 <input
-                  type="text"
-                  value={autor}
-                  onChange={(e) => setAutor(e.target.value)}
-                  placeholder="anónimo / nombre de usuario"
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  type="checkbox"
+                  id="anonimo"
+                  className="w-4 h-4 accent-blue-600"
+                  name='anonimo'
                 />
+                <label htmlFor="anonimo" className="text-sm">
+                  Publicar como anónimo
+                </label>
               </div>
 
+              {/* Título */}
               <div>
-                <label className="block text-sm mb-1">Título de proyecto</label>
+                <label className="block text-sm mb-1">Título del proyecto</label>
                 <input
                   type="text"
-                  value={titulo}
-                  onChange={(e) => setTitulo(e.target.value)}
                   placeholder="Ej: Ley de Fomento a la Reutilización"
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  name='titulo'
                 />
               </div>
 
               <div>
-                <label className="block text-sm mb-1">
-                  Subir archivo / extraerlo
-                </label>
-                <input
-                  type="file"
-                  accept=".md"
-                  onChange={handleFileUpload}
-                  className="block w-full text-sm text-gray-300 border border-gray-700 rounded-lg cursor-pointer bg-gray-800 p-2 mb-2"
-                />
+               <label className="block text-sm mb-1">Descripcion</label>
+
                 <textarea
-                  value={markdown}
-                  onChange={(e) => setMarkdown(e.target.value)}
+                  name='descripcion'
                   placeholder="Escribe o edita el contenido Markdown..."
                   className="w-full h-32 bg-gray-800 border border-gray-700 text-gray-100 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold"
-              >
-                Subir Proyecto
-              </button>
+              {/* Áreas */}
+              <div>
+                <label className="block text-sm mb-1">Áreas</label>
+                <select
+                  name='areas'
+                  multiple
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 h-28"
+                >
+                  {opcionesAreas.map((area) => (
+                    <option key={area.id} value={area.id}>
+                      {area.nombre}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-400 mt-1">
+                  (Mantén presionada Ctrl o Cmd para seleccionar varias)
+                </p>
+              </div>
+
+              {/* Archivo Markdown */}
+               <div>
+                <label className="block text-sm mb-1">
+                  Subir archivo / extraerlo
+                </label>
+                <input
+                  name='archivo'
+                  type="file"
+                  accept=".md"
+                  className="block w-full text-sm text-gray-300 border border-gray-700 rounded-lg cursor-pointer bg-gray-800 p-2 mb-2"
+                />
+                
+              </div> 
+
+              <div className="flex gap-3">
+                <button
+                  type="submit"
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold"
+                >
+                  Subir Proyecto
+                </button>
+                
+              </div>
             </form>
 
-            {/* Vista previa */}
-            {markdown && (
-              <div className="mt-5 border-t border-gray-700 pt-3">
-                <h3 className="text-sm font-semibold text-blue-400 mb-2">
-                  Vista previa:
-                </h3>
-                <div className="bg-gray-900 p-3 rounded-lg h-40 overflow-y-auto border border-gray-700 text-sm">
-                  <ReactMarkdown>{markdown}</ReactMarkdown>
-                </div>
-              </div>
-            )}
+           
           </div>
         </div>
       )}
