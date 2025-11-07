@@ -22,7 +22,7 @@ export default function Login() {
 
  if (isLoading){
   return (
-   <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
+   <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white">
       <div className="relative w-16 h-16">
         <div className="absolute inset-0 border-4 border-gray-600 rounded-full"></div>
         <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>

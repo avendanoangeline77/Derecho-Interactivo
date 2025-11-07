@@ -60,10 +60,6 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL('/notallowed', req.nextUrl))
   }
   
-    //  Solo estudiantes pueden acceder a /foro
-  if (path === '/foro' && session?.role !== 'estudiante') {
-    return NextResponse.redirect(new URL('/notallowed', req.nextUrl))
-  }
 
   return NextResponse.next()
 }

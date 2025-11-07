@@ -1,10 +1,7 @@
 'use server'
+
 import  pb  from '@/app/database/db'
-
 import GetUser from '../ui/GetUser'
-
-import EmailVerificationPopup from '../ui/EmailVerification'
-
 import { getUser } from '../actions/users'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -16,9 +13,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
    //console.log(user, 'hhhola')
    
   return (
-  <div className="min-h-screen flex flex-col">
+    <div className=" flex flex-col ">
     <GetUser user={user} />
-      <EmailVerificationPopup user ={user}> </EmailVerificationPopup>
+     
       <main className="flex-1 bg-gray-50">{children}</main>
     </div>
   )

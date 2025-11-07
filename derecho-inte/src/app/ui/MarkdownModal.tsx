@@ -4,7 +4,7 @@ import React, { useState ,useEffect, useActionState} from "react";
 import dynamic from "next/dynamic";
 import { getAreas } from "../actions/areas";
 import { agregarProyecto } from "../actions/foro";
-
+import { useUser } from "../context/UserContext";
 
 interface Proyecto {
   autor: string;
@@ -26,12 +26,20 @@ export default function UploadProyectoModal({initAreas}) {
   const [anonimo, setAnonimo] = useState(false);
   const [areas, setAreas] = useState<string[]>([]);
 
+  const {currentUser} = useUser()
+
+
   const [state, action, isPending] = useActionState(
     async (prevState: any, formData: FormData) => {
       const res = await agregarProyecto(prevState, formData)
     console.log(res)
-      if (!res.errors) {
+      if (!res?.errors) {
         console.log(res?.errors)
+
+      return 
+      } else{
+         //window.location.href = 'http://localhost:3000/foro'
+
       }
 
       return res
@@ -50,13 +58,18 @@ export default function UploadProyectoModal({initAreas}) {
 
   return (
     <>
-      <button
+      <div className="flex justify-center">
+      {
+        currentUser?.role !== "docente" && (
+           <button
         onClick={() => setShowModal(true)}
         className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-lg shadow transition-all"
       >
         Subir Proyecto
       </button>
-
+        )
+      }
+      </div>
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50 overflow-y-auto">
           <div className="bg-[#1E1E1E] text-gray-100 w-[90%] max-w-md rounded-2xl p-6 relative border border-gray-700 shadow-lg">
@@ -79,7 +92,7 @@ export default function UploadProyectoModal({initAreas}) {
               <input 
                 type="hidden" 
                 name='autor'  
-                value={"fyicu44juw1xqxg"}            
+                value={currentUser?.id}            
               
               
               />
@@ -106,6 +119,10 @@ export default function UploadProyectoModal({initAreas}) {
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   name='titulo'
                 />
+
+                 {state?.errors?.autor && (
+          <p className="mt-1 text-sm text-red-600">{state.errors.autor}</p>
+        )}
               </div>
 
               <div>
@@ -116,6 +133,9 @@ export default function UploadProyectoModal({initAreas}) {
                   placeholder="Escribe o edita el contenido Markdown..."
                   className="w-full h-32 bg-gray-800 border border-gray-700 text-gray-100 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                 {state?.errors?.descripcion && (
+          <p className="mt-1 text-sm text-red-600">{state.errors.descripcion}</p>
+        )}
               </div>
 
               {/* Áreas */}
@@ -132,6 +152,10 @@ export default function UploadProyectoModal({initAreas}) {
                     </option>
                   ))}
                 </select>
+
+                 {state?.errors?.areas && (
+          <p className="mt-1 text-sm text-red-600">{state.errors.areas}</p>
+        )}
                 <p className="text-xs text-gray-400 mt-1">
                   (Mantén presionada Ctrl o Cmd para seleccionar varias)
                 </p>
@@ -148,7 +172,9 @@ export default function UploadProyectoModal({initAreas}) {
                   accept=".md"
                   className="block w-full text-sm text-gray-300 border border-gray-700 rounded-lg cursor-pointer bg-gray-800 p-2 mb-2"
                 />
-                
+                 {state?.errors?.archivo && (
+          <p className="mt-1 text-sm text-red-600">{state.errors.archivo}</p>
+        )}
               </div> 
 
               <div className="flex gap-3">

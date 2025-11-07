@@ -40,6 +40,7 @@ const user = {
       username: authData.record.username,
       role: authData.record.role,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 días
+      
     }
     // 3️⃣ Crear sesión (ej. guardada en cookie)
     await createSession(user)
