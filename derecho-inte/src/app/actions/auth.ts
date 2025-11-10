@@ -7,7 +7,27 @@ import { loginFormSchema, FormState } from "@/app/lib/validations/auth";
 import { createSession, decrypt } from "@/app/lib/sessions";
 import { cookies } from "next/headers";
 
-export async function login(state: FormState, formData: FormData) {
+export interface LoginErrors {
+  email?: string[]
+  password?: string[]
+  general?: string[]
+}
+
+export interface LoginResponse {
+  id?: string
+  username?: string
+  email?: string
+  role?: string
+  verified?: boolean
+  expiresAt?: Date
+  errors?: LoginErrors
+}
+
+
+
+export async function login(  prevState: LoginResponse | null,
+  formData: FormData
+): Promise<LoginResponse> {
   try {
     // 1️⃣ Validar campos
     const validatedFields = loginFormSchema.safeParse({
@@ -52,7 +72,7 @@ export async function login(state: FormState, formData: FormData) {
     return user;
 
     // 4️⃣ Redirigir al dashboard
-  } catch (error) {
+  } catch (error:any) {
     // 🧠 PocketBase lanza un error con un mensaje legible
     console.error("Error al autenticar:", error);
     console.error("Error al autenticar:", error.response);

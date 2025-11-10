@@ -1,45 +1,42 @@
-"use client";
-import { editUser, getUsers, deleteUser
+'use client'
 
- } from "@/app/actions/users";
-import { createUser } from "@/app/actions/users";
-import { userFormSchema } from "@/app/lib/validations/users";
-import { useState } from "react";
-import { useActionState ,useEffect} from 'react'
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
+import { getUsers, createUser, editUser, deleteUser } from '@/app/actions/users'
 
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-
-type User = {
+// 🧩 Tipos base
+export type User = {
+  id: string
   username: string
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-};
+  email: string
+  role: string
+}
+interface ActionResponse<T = unknown> {
+  message?: string;
+  data?:  User;
+  errors?: Record<string, string[]>;
+}
+
+// 🧩 Posible respuesta del servidor
+type ServerResponse = {
+  message?: string
+  data?: User
+  errors?: Record<string, string[]>
+}
 
 export default function UserAdminPanel() {
-// const users = await getUsers()
+  const [response, setResponse] = useState<ServerResponse | null>(null)
+  const [users, setUsers] = useState<User[]>([])
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [editingUser, setEditingUser] = useState<User | null>(null)
 
-const [response, setResponse] = useState(null);
-  
- //const [state, action, pending] = useActionState(createUser, undefined)
- const [id, setId] = useState<string | null>(null); 
- const [state, setState] = useState(false);
+  const [username, setUsername] = useState<string>('')
+  const [email, setEmail] = useState<string>('')
+  const [role, setRole] = useState<string>('')
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [form, setForm] = useState({ name: "", email: "", role: "User" });
-  
-  const [username, setUsername] = useState<string>("")
-  
-
-  const [users, setUsers] = useState<any[]>([])
-  
-  const [email, setEmail] = useState<string>("")
-  const [role, setRole] = useState<string>("")
+  // 🔹 Cargar lista de usuarios al iniciar
   useEffect(() => {
-
     async function fetchUsers() {
       const usersList = await getUsers()
       setUsers(usersList)
@@ -47,83 +44,73 @@ const [response, setResponse] = useState(null);
     fetchUsers()
   }, [])
 
- async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-  event.preventDefault();
+  // 🔹 Crear o editar usuario
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
 
-  const formData = new FormData(event.currentTarget);
-  const user =editingUser ?  await editUser(formData) : await createUser(formData); // llama a la server action manualmente  console.log(user)
-  console.log(user)
+    const userResponse: ServerResponse = editingUser
+      ? await editUser(formData)
+      : await createUser(formData)
 
-  setResponse(user)
-  if (user.message) {
-    if (editingUser){
-      const users1 = users.map((user1: any) =>
-      user1.id === user.data.id ? { ...user1,username, email, role } : user1
-    );
-    console.log(users1)
+    setResponse(userResponse)
 
+    if (userResponse.message && userResponse.data) {
+      const { data } = userResponse
 
-    
+      if (editingUser) {
+        // Actualizar usuario existente
+        const updatedUsers = users.map((u) =>
+          u.id === data.id ? { ...u, username, email, role } : u
+        )
+        setUsers(updatedUsers)
+      } else {
+        // Agregar nuevo usuario
+        setUsers((prev) => [data, ...prev])
+      }
 
-    setUsers(users1);
-    
-    setIsModalOpen(false)
-    
+      setIsModalOpen(false)
+      setEditingUser(null)
+      setUsername('')
+      setEmail('')
+      setRole('')
     }
-
-    else {
-     
-
-      setUsers(prev => [{
-      id: user.data.id,
-      username: user.data.username,
-      email: user.data.email,
-      role: user.data.role
-    }, ...prev]);
-        
-    setIsModalOpen(false)
-
-    }
-   
   }
 
-}
-
+  // 🔹 Abrir modal (modo crear o editar)
   const handleOpenModal = (user?: User) => {
     if (user) {
-      setUsername(user.username);
-      setEmail(user.email);
-      setRole(user.role);
-      setEditingUser(user);
-      //setForm({ name: user.name, email: user.email, role: user.role });
+      setEditingUser(user)
+      setUsername(user.username)
+      setEmail(user.email)
+      setRole(user.role)
     } else {
-      setEditingUser(null);
-     // setForm({ name: "", email: "", role: "User" });
+      setEditingUser(null)
+      setUsername('')
+      setEmail('')
+      setRole('docente')
     }
-    setIsModalOpen(true);
-  };
+    setIsModalOpen(true)
+  }
 
- 
+  // 🔹 Eliminar usuario
+  const handleDelete = async (id: string) => {
+    if (confirm('¿Eliminar este usuario?')) {
+      const formData = new FormData()
+      formData.append('id', id)
 
-  
-const handleDelete = async(id: number) => {
-    if (confirm("¿Eliminar este usuario?")) {
+      const resp = await deleteUser(formData)
+      console.log(resp)
 
-    const formData = new FormData();
-    formData.append("id",id.toString())
-  
-    console.log(formData)
-    const response = await deleteUser(formData)
-    console.log(response)
-      setUsers(users.filter(u => u.id !== id));
+      setUsers(users.filter((u) => u.id !== id))
     }
-  };
+  }
+
   return (
     <div className="p-6 max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Panel de Administración de Usuarios</h1>
 
-
-       {/* Flechita para volver atras */}
+      {/* 🔙 Flecha para volver */}
       <Link
         href="/dashboard"
         className="absolute top-4 left-4 p-2 rounded-full hover:bg-gray-800 transition"
@@ -131,6 +118,7 @@ const handleDelete = async(id: number) => {
         <ArrowLeft className="w-5 h-5 text-gray-300 hover:text-white" />
       </Link>
 
+      {/* 🔹 Botón agregar */}
       <button
         onClick={() => handleOpenModal()}
         className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
@@ -138,6 +126,7 @@ const handleDelete = async(id: number) => {
         + Agregar Usuario
       </button>
 
+      {/* 🔹 Tabla de usuarios */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
           <thead className="bg-gray-100">
@@ -149,7 +138,7 @@ const handleDelete = async(id: number) => {
             </tr>
           </thead>
           <tbody>
-            {users.map(user => (
+            {users.map((user) => (
               <tr key={user.id} className="border-t hover:bg-gray-50">
                 <td className="py-3 px-4">{user.username}</td>
                 <td className="py-3 px-4">{user.email}</td>
@@ -181,87 +170,76 @@ const handleDelete = async(id: number) => {
         </table>
       </div>
 
-      {/* Modal */}
+      {/* 🔹 Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-xl w-96">
             <h2 className="text-xl font-semibold mb-4">
-              {editingUser ? "Editar Usuario" : "Agregar Usuario"}
+              {editingUser ? 'Editar Usuario' : 'Agregar Usuario'}
             </h2>
+
             <form onSubmit={handleSubmit}>
-              {
-                editingUser && (
-                   <input type="hidden" value={
-                    editingUser.id
+              {editingUser && (
+                <input type="hidden" name="id" value={editingUser.id} />
+              )}
 
-                   } 
-                   name="id"
-                
-                   />
-
-                )
-              }
-              {
-                editingUser && (
-                <div>
-                   <input 
-                     type="text"
-              placeholder="Nombre"
-
-              name="username"
-              value={username}
-              onChange={(e)=>setUsername(e.target.value)}
-              className="w-full mb-3 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-              
+              <input
+                type="text"
+                placeholder="Nombre"
+                name="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full mb-3 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
               {response?.errors?.username && (
+                <p className="mt-1 text-sm text-red-600">
+                  {response.errors.username}
+                </p>
+              )}
 
-            <p className="mt-1 text-sm text-red-600">{response.errors.username}</p>
-          )}
-          </div>
+              <input
+                type="email"
+                placeholder="Correo"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full mb-3 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              {response?.errors?.email && (
+                <p className="mt-1 text-sm text-red-600">
+                  {response.errors.email}
+                </p>
+              )}
 
-
-                )
-              }
-           
-                 <input
-              type="email"
-              placeholder="Correo"
-              name="email"
-              value={email}
-              onChange={(e)=>setEmail(e.target.value)}
-              className="w-full mb-3 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {response?.errors?.email && (
-            <p className="mt-1 text-sm text-red-600">{response.errors.email}</p>
-          )}
-            <select 
-            name="role"
-            value={role}
-            onChange={(e)=>setRole(e.target.value)}
-              className="w-full mb-4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="docente">Docente</option>
-              <option value="estudiante">Estudiante</option>
-            </select>
-
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"
+              <select
+                name="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full mb-4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                Cancelar
-              </button>
-              <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-              >
-                Guardar
-              </button>
-            </div>
+                <option value="docente">Docente</option>
+                <option value="estudiante">Estudiante</option>
+              </select>
+
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  Guardar
+                </button>
+              </div>
             </form>
-           
           </div>
         </div>
       )}
     </div>
-  );
+  )
 }
