@@ -17,7 +17,20 @@ const PropuestaLey = async({
     
     console.log(id)
     console.log(proyecto)
-    
+    const isAnonimo = proyecto.expand.autor.anonimo
+    const autor = proyecto.expand.autor.username
+    const areas = proyecto.expand.areas.map((area)=>{
+      return area.nombre
+    }).join(", ")
+
+    function formDate(fecha: string): string {
+  return new Date(fecha).toLocaleDateString("es-AR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  })
+}
   const baseUrl = pb.baseUrl; // "https://tu-servidor.pockethost.io/"
   const archivoUrl = `${baseUrl}/api/files/${proyecto.collectionId}/${proyecto.id}/${proyecto.archivo}`;
   return (
@@ -35,9 +48,9 @@ const PropuestaLey = async({
           
 
           <div className="text-sm text-gray-400 space-y-1">
-            <p><span className="font-semibold text-gray-300">Autor:</span> Ana López</p>
-            <p><span className="font-semibold text-gray-300">Áreas:</span> Derecho Ambiental, Derecho del Consumidor</p>
-            <p><span className="font-semibold text-gray-300">Publicado:</span> 05-10-2025</p>
+            <p><span className="font-semibold text-gray-300">Autor:</span>{isAnonimo?"anonimo": autor}</p>
+            <p><span className="font-semibold text-gray-300">Áreas:</span> {areas}</p>
+            <p><span className="font-semibold text-gray-300">Publicado:</span>{formDate(proyecto.created)} </p>
           </div>
         </header>
           

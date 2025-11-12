@@ -29,7 +29,7 @@ type UserEditInput = z.infer<typeof userEditFormSchema>;
 // Tipos de respuesta estandarizados
 interface ActionResponse<T = unknown> {
   message?: string;
-  data?: T;
+  data?:  User;
   errors?: Record<string, string[]>;
 }
 

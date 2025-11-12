@@ -15,6 +15,8 @@ export type User = {
 type UserContextType = {
   currentUser: User | null;
   setUser: Dispatch<SetStateAction<User | null>>;
+  proyectos: any[];
+  setProyectos: Dispatch<SetStateAction<any[] | null>>;
 };
 
 // ✅ Crear el contexto con tipo seguro
@@ -29,9 +31,10 @@ export function UserProvider({
   user?: User | null;
 }) {
   const [currentUser, setUser] = useState<User | null>(user || null);
+   const [proyectos, setProyectos] = useState <any[]>([]);
 
   return (
-    <UserContext.Provider value={{ currentUser, setUser }}>
+    <UserContext.Provider value={{ currentUser, setUser,proyectos, setProyectos }}>
       {children}
     </UserContext.Provider>
   );

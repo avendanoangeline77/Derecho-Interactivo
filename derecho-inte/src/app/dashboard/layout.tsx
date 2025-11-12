@@ -14,7 +14,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
    //const user = pb.authStore.model // usuario actual
    //console.log(user, 'hhhola')
-   
+   if (!user) return null; // o mostrar un loader, etc.
+
   return (
   <div className="min-h-screen flex flex-col">
     <GetUser user={user} />

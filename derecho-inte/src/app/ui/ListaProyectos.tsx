@@ -1,17 +1,19 @@
 'use client'
 import { useEffect } from 'react'
-import { useUser } from '@/app/context/UserContext'
 import { set } from 'zod';
 import Link from 'next/link';
 
+import { useUser } from '@/app/context/UserContext';
+
 import ProyectoCard from './ProyectoCard';
 
-export default function ListaProyectos({proyectos}) {
-const { currentUser,setUser } = useUser();
+export default function ListaProyectos({proyectos: p}) {
+const {setProyectos, currentUser,proyectos,setUser } = useUser();
 
-console.log(proyectos)
+
+
 useEffect(() => {
- 
+ setProyectos(p)
 }, [])
 
 function formDate(date){
