@@ -6,7 +6,6 @@ import { getUser } from '../actions/users'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
 
-  const user = await getUser()
 
 
    //const user = pb.authStore.model // usuario actual
@@ -14,7 +13,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
    
   return (
     <div className=" flex flex-col ">
-    <GetUser user={user} />
+ 
      
       <main className="flex-1 bg-gray-50">{children}</main>
     </div>

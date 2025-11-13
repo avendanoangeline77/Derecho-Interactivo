@@ -5,6 +5,7 @@ import { AlertTriangle, X } from 'lucide-react'
 import pb from '../database/db'
 import { sendVerification } from '../actions/auth'
 import { getVerifyUser } from '../actions/users'
+import { useUser } from '../context/UserContext'
 
 // 🧩 Tipado del usuario
 export type User = {
@@ -15,7 +16,7 @@ export type User = {
 
 // 🧩 Props del componente
 interface EmailVerificationPopupProps {
-  user: SessionPayload | null;
+ 
 }
 
 /**
@@ -23,7 +24,9 @@ interface EmailVerificationPopupProps {
  * Muestra un aviso de verificación con un botón para reenviar el email.
  * Incluye un botón flotante de reapertura en la esquina superior izquierda.
  */
-const EmailVerificationPopup: React.FC<EmailVerificationPopupProps> = ({ user }) => {
+const EmailVerificationPopup: React.FC<EmailVerificationPopupProps> = ({  }) => {
+  const UserContext = useUser()
+  const user = UserContext.currentUser
   if(!user)return 
   const [isVerified, setIsVerified] = useState<boolean>(user.verified? true:false)
   const [showVerificationPopup, setShowVerificationPopup] = useState<boolean>(true)

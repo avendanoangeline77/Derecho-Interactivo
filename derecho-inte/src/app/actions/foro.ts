@@ -42,15 +42,13 @@ import { proyectoCreateSchema } from "../lib/validations/foroEstudiantes"
       titulo,
       autor,
       descripcion,
-      areas: areas.map((area)=>{
-         return area.toString()
-      }),
+      areas: areas,
       anonimo: any,
       estado: 'pendiente',
       archivo
-
+      
     })
-
+    console.log(user)
  
   }
   catch (errors:any) {
@@ -61,7 +59,7 @@ import { proyectoCreateSchema } from "../lib/validations/foroEstudiantes"
 
 
 
-export async function getProyectos(filtros:any| null) {
+export async function getProyectos(filtros:any| null, userRole: string | null) {
   try {
   let queryFilter = [];
 
@@ -70,6 +68,11 @@ if (filtros?.estados?.length > 0) {
   const estadosFilter = filtros?.estados.map(e => `estado = "${e}"`).join(" || ");
   queryFilter.push(`(${estadosFilter})`);
 }
+
+if (userRole == "estudiante") { 
+  queryFilter.push(`estado="validado"`);
+}
+
 
 // Filtrar por áreas (array de IDs relacionados)
 if (filtros?.areas?.length > 0) {
@@ -82,19 +85,20 @@ if (filtros?.autor) {
   if (filtros.autor === 'anonimo') {
     queryFilter.push('anonimo = true');
   } else {
-    queryFilter.push(`autor.nombre ~ "${filtros.autor}"`);
+    queryFilter.push(`autor.username ~ "${filtros.autor}"`);
   }
 }
 
-
 // Unir todo con AND
 const filterString = queryFilter.join(" && ");
+
 console.log(filterString)
 // Consulta final
 const result = await pb.collection('proyecto_de_leyes').getList(1, 10, {
   expand: 'autor,areas',
   sort: '-created',
   filter: filterString
+  
 });
 
     return result.items

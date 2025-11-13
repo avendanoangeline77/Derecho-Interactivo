@@ -31,7 +31,7 @@ interface Props {
 
 
 
-export default function ForoPageClient({ proyectos , areas }: Props) {
+export default function ForoPageClient({areas }: Props) {
 const [filtros, setFiltros] = useState({
   estados: [] as string[],
   areas: [] as string[],
@@ -44,7 +44,8 @@ const [filtros, setFiltros] = useState({
   
   useEffect(() => {
    const fetchProyectos = async () => {
-    UserContext.setProyectos(await getProyectos(filtros))
+    console.log(UserContext)
+    UserContext.setProyectos(await getProyectos(filtros, UserContext?.currentUser?.role))
    }
   fetchProyectos()
     return () => {
@@ -190,7 +191,7 @@ const filtrarProyectos = async() =>{
           <h2 className="text-center text-gray-400 mb-2">
             LISTADO DE PROYECTOS 
           </h2>
-          <ListaProyectos proyectos={proyectos} />
+          <ListaProyectos proyectos={UserContext.proyectos} />
         </section>
       </div>
 

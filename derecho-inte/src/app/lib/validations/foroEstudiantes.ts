@@ -7,10 +7,7 @@ export const proyectoCreateSchema= z.object({
     .min(1, "El título es obligatorio.")
     .min(3, "El título debe tener al menos 3 caracteres.")
     .max(100, "El título no puede superar los 100 caracteres.")
-    .regex(
-      /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,:;!?()'"-]+$/,
-      "El título solo puede contener letras, números, espacios y símbolos comunes."
-    ),
+    ,
 
   descripcion: z
     .string()

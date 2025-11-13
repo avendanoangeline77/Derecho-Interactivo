@@ -119,7 +119,15 @@ export default function UploadProyectoModal({initAreas}) {
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   name='titulo'
                 />
-
+                  {state?.errors?.titulo && (
+            <div className="mt-2 text-sm text-red-600">
+              <ul className="list-disc list-inside">
+                {state.errors.titulo.map((error) => (
+                  <li key={error}>- {error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
                  {state?.errors?.autor && (
           <p className="mt-1 text-sm text-red-600">{state.errors.autor}</p>
         )}
@@ -133,6 +141,15 @@ export default function UploadProyectoModal({initAreas}) {
                   placeholder="Escribe o edita el contenido Markdown..."
                   className="w-full h-32 bg-gray-800 border border-gray-700 text-gray-100 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                  {state?.errors?.descripcion && (
+            <div className="mt-2 text-sm text-red-600">
+              <ul className="list-disc list-inside">
+                {state.errors.descripcion.map((error) => (
+                  <li key={error}>- {error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
                  {state?.errors?.descripcion && (
           <p className="mt-1 text-sm text-red-600">{state.errors.descripcion}</p>
         )}

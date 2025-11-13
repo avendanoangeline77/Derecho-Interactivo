@@ -3,6 +3,7 @@
 import {getProyectos } from "../actions/foro";
 import { getAreas } from "../actions/areas";
 import ForoPageClient from "../ui/ForoPage";
+import { getUser } from "../actions/users";
 // Tipos básicos
 interface Proyecto {
   id: string;
@@ -24,8 +25,7 @@ interface Props {
 
 // Versión servidor (para mantener compatibilidad con tus actions)
 export default async function ForoPage() {
-  const proyectos = await getProyectos(null);
   const areas = await getAreas();
 
-  return <ForoPageClient proyectos={proyectos} areas={areas} />;
+  return <ForoPageClient areas={areas} />;
 }
